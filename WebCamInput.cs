@@ -5,6 +5,10 @@ public class WebCam : MonoBehaviour
     private WebCamTexture webcamTexture;
     private Renderer renderer;
     private Texture2D newTexture;
+    [Range(0, 1)]
+    public float threshhold;
+    public enum Channel { red, green, blue };
+    public Channel channel;
 
     void Start()
     {
@@ -37,13 +41,36 @@ public class WebCam : MonoBehaviour
 
         for (int i = 0; i < pixels.Length; i++)
         {
-            float g = pixels[i].g;       // keep green channel
-            if (g > 0.9)
+            switch (channel)
             {
-                pixels[i] = new Color(0, g, 0);
+                case Channel.red:
+                    float r = pixels[i].r;       // keep red channel
+                    if (r > threshhold)
+                    {
+                        pixels[i] = new Color(r, 0, 0);
+                    }
+                    else
+                        pixels[i] = new Color(0, 0, 0);
+                    break;
+                case Channel.green:
+                    float g = pixels[i].g;       // keep green channel
+                    if (g > threshhold)
+                    {
+                        pixels[i] = new Color(0, g, 0);
+                    }
+                    else
+                        pixels[i] = new Color(0, 0, 0);
+                    break;
+                case Channel.blue:
+                    float b = pixels[i].b;       // keep blue channel
+                    if (b > threshhold)
+                    {
+                        pixels[i] = new Color(0, 0, b);
+                    }
+                    else
+                        pixels[i] = new Color(0, 0, 0);
+                    break;
             }
-            else
-                pixels[i] = new Color(0, 0, 0);
         }
 
         newTexture.SetPixels(pixels);
